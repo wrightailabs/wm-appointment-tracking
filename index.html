@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Weather Masters — BI Lead & Appointment Tracking Report</title>
+  <style>
+    :root {--blue:#1a56db;--blue-light:#e8f0fe;--green:#0e9f6e;--green-light:#def7ec;--orange:#ff5a1f;--orange-light:#fde8d8;--purple:#7c3aed;--purple-light:#ede9fe;--red:#dc2626;--red-light:#fee2e2;--yellow:#d97706;--yellow-light:#fef3c7;--navy:#1E2A5E;--bg:#f3f4f6;--card:#fff;--border:#e5e7eb;--text:#111827;--muted:#6b7280;}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text)}
+    .header{background:linear-gradient(135deg,#1E2A5E 0%,#2a3a7a 100%);color:white;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+    .header-left{display:flex;align-items:center;gap:14px}
+    .header-badge{background:rgba(255,255,255,0.15);border-radius:8px;padding:8px 14px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px}
+    .header-title{font-size:20px;font-weight:800;letter-spacing:-.4px}
+    .header-sub{font-size:12px;opacity:.7;margin-top:3px}
+    .live-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(52,211,153,.2);border:1px solid rgba(52,211,153,.4);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:700}
+    .live-dot{width:8px;height:8px;border-radius:50%;background:#34d399;animation:pulse 1.5s infinite}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+    .container{max-width:1080px;margin:0 auto;padding:24px 16px}
+    .section-heading{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin:24px 0 10px}
+    .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px}
+    .kpi-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;position:relative;overflow:hidden}
+    .kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:12px 12px 0 0}
+    .kpi-card.blue::before{background:var(--blue)}.kpi-card.green::before{background:var(--green)}.kpi-card.orange::before{background:var(--orange)}.kpi-card.yellow::before{background:var(--yellow)}.kpi-card.purple::before{background:var(--purple)}
+    .kpi-icon{font-size:22px;margin-bottom:8px}.kpi-value{font-size:28px;font-weight:800;line-height:1.1}.kpi-label{font-size:11px;color:var(--muted);margin-top:4px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}.kpi-note{font-size:10px;color:var(--muted);margin-top:4px}
+    .funnel{display:flex;align-items:stretch;margin-bottom:24px;border-radius:12px;overflow:hidden;border:1px solid var(--border);background:white}
+    .funnel-step{flex:1;padding:18px 12px;text-align:center}
+    .funnel-arrow{display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--muted);padding:0 2px;background:white}
+    .funnel-val{font-size:26px;font-weight:800}.funnel-lbl{font-size:10px;color:var(--muted);margin-top:3px;font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+    .acc-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:10px}
+    .acc-header{padding:16px 20px;cursor:pointer;display:flex;align-items:center;gap:14px;user-select:none;transition:background .15s;flex-wrap:wrap}
+    .acc-header:hover{background:#f9fafb}
+    .acc-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+    .acc-icon.blue{background:var(--blue-light)}.acc-icon.green{background:var(--green-light)}.acc-icon.orange{background:var(--orange-light)}.acc-icon.purple{background:var(--purple-light)}
+    .acc-meta{flex:1;min-width:150px}.acc-title{font-size:15px;font-weight:700}.acc-sub{font-size:12px;color:var(--muted);margin-top:2px}
+    .acc-pill{font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;white-space:nowrap}
+    .acc-pill.blue{background:var(--blue-light);color:var(--blue)}.acc-pill.green{background:var(--green-light);color:var(--green)}.acc-pill.orange{background:var(--orange-light);color:var(--orange)}.acc-pill.purple{background:var(--purple-light);color:var(--purple)}
+    .acc-chevron{font-size:18px;color:var(--muted);transition:transform .25s;flex-shrink:0}
+    .acc-card.open .acc-chevron{transform:rotate(180deg)}
+    .acc-body{display:none;padding:0 20px 18px;border-top:1px solid var(--border)}
+    .acc-card.open .acc-body{display:block}
+    .job-stats{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}
+    .job-stat{flex:1;min-width:80px;background:var(--bg);border-radius:8px;padding:12px 14px;text-align:center}
+    .job-stat-val{font-size:20px;font-weight:800}.job-stat-lbl{font-size:11px;color:var(--muted);margin-top:3px;text-transform:uppercase;letter-spacing:.4px}
+    .data-table{width:100%;border-collapse:collapse;font-size:13px}
+    .data-table th{text-align:left;padding:8px 10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);border-bottom:2px solid var(--border)}
+    .data-table td{padding:9px 10px;border-bottom:1px solid var(--border)}
+    .data-table tr:last-child td{border-bottom:none}.data-table tr:hover td{background:#f9fafb}
+    .badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600}
+    .badge-green{background:var(--green-light);color:var(--green)}.badge-blue{background:var(--blue-light);color:var(--blue)}.badge-yellow{background:var(--yellow-light);color:var(--yellow)}.badge-red{background:var(--red-light);color:var(--red)}.badge-gray{background:#f3f4f6;color:#6b7280}
+    .footer{background:var(--navy);color:rgba(255,255,255,.6);text-align:center;padding:14px;font-size:11px;margin-top:32px}
+    .footer strong{color:rgba(255,255,255,.9)}
+    @media(max-width:600px){.kpi-grid{grid-template-columns:repeat(2,1fr)};.funnel{flex-direction:column}}
+  </style>
+</head>
+<body>
+<div class="header">
+  <div class="header-left">
+    <div class="header-badge">&#9889; BI Enhanced</div>
+    <div>
+      <div class="header-title">Weather Masters of Georgia &#8212; BI Lead &amp; Appointment Tracking</div>
+      <div class="header-sub">Business Intelligence (BI) Report &nbsp;&middot;&nbsp; Last 30 Days through June 15, 2026 &nbsp;&middot;&nbsp; Powered by Wright AI Labs</div>
+    </div>
+  </div>
+  <div>
+    <div class="live-badge"><span class="live-dot"></span> Live Data</div>
+    <div style="font-size:11px;opacity:.55;text-align:right;margin-top:4px;">Updated 6/15/2026</div>
+  </div>
+</div>
+<div class="container">
+  <div class="section-heading">&#128202; 30-Day Lead Funnel</div>
+  <div class="funnel">
+    <div class="funnel-step"><div class="funnel-val" style="color:var(--blue)">27</div><div class="funnel-lbl">Total Leads</div></div>
+    <div class="funnel-arrow">&#8594;</div>
+    <div class="funnel-step"><div class="funnel-val" style="color:var(--green)">20</div><div class="funnel-lbl">Scheduled / Active</div></div>
+    <div class="funnel-arrow">&#8594;</div>
+    <div class="funnel-step"><div class="funnel-val" style="color:var(--green)">12</div><div class="funnel-lbl">Completed</div></div>
+    <div class="funnel-arrow">&#8594;</div>
+    <div class="funnel-step"><div class="funnel-val" style="color:var(--yellow)">2</div><div class="funnel-lbl">Needs Scheduling</div></div>
+    <div class="funnel-arrow">&#8594;</div>
+    <div class="funnel-step"><div class="funnel-val" style="color:var(--orange)">74%</div><div class="funnel-lbl">Schedule Rate</div></div>
+  </div>
+  <div class="section-heading">&#128200; KPI Summary</div>
+  <div class="kpi-grid">
+    <div class="kpi-card blue"><div class="kpi-icon">&#128229;</div><div class="kpi-value" style="color:var(--blue)">27</div><div class="kpi-label">Total Leads</div><div class="kpi-note">Last 30 days</div></div>
+    <div class="kpi-card green"><div class="kpi-icon">&#9989;</div><div class="kpi-value" style="color:var(--green)">12</div><div class="kpi-label">Completed Jobs</div><div class="kpi-note">From Claire leads</div></div>
+    <div class="kpi-card orange"><div class="kpi-icon">&#128197;</div><div class="kpi-value" style="color:var(--orange)">74%</div><div class="kpi-label">Schedule Rate</div><div class="kpi-note">Leads to appointments</div></div>
+    <div class="kpi-card yellow"><div class="kpi-icon">&#9203;</div><div class="kpi-value" style="color:var(--yellow)">2</div><div class="kpi-label">Needs Scheduling</div><div class="kpi-note">Action required</div></div>
+    <div class="kpi-card purple"><div class="kpi-icon">&#128227;</div><div class="kpi-value" style="color:var(--purple)">4</div><div class="kpi-label">Lead Sources</div><div class="kpi-note">FB &middot; Google &middot; LL &middot; Angi</div></div>
+    <div class="kpi-card blue"><div class="kpi-icon">&#127939;</div><div class="kpi-value" style="color:var(--blue)">7</div><div class="kpi-label">Local Leap Leads</div><div class="kpi-note">All residential installs</div></div>
+  </div>
+  <div class="section-heading">&#128227; Lead Sources &#8212; Click to Expand Details</div>
+  
+    <div class="acc-card" onclick="toggle(this)">
+      <div class="acc-header">
+        <div class="acc-icon blue">📘</div>
+        <div class="acc-meta">
+          <div class="acc-title">Facebook</div>
+          <div class="acc-sub">13 leads &nbsp;·&nbsp; 77% scheduled &nbsp;·&nbsp; 7 completed</div>
+        </div>
+        <span class="acc-pill blue">13 Leads</span>
+        <span class="acc-chevron">&#9662;</span>
+      </div>
+      <div class="acc-body">
+        <div class="job-stats">
+          <div class="job-stat"><div class="job-stat-val" style="color:#1a56db">13</div><div class="job-stat-lbl">Total Leads</div></div>
+          <div class="job-stat"><div class="job-stat-val" style="color:#0e9f6e">77%</div><div class="job-stat-lbl">Schedule Rate</div></div>
+          <div class="job-stat"><div class="job-stat-val" style="color:#0e9f6e">7</div><div class="job-stat-lbl">Completed</div></div>
+          <div class="job-stat"><div class="job-stat-val" style="color:#d97706">1</div><div class="job-stat-lbl">Needs Scheduling</div></div>
+        </div>
+        <table class="data-table" style="margin-top:14px;">
+          <thead><tr><th>Customer</th><th>Status</th><th>Scheduled Date</th><th>Tags</th></tr></thead>
+          <tbody><tr><td><strong>Brian Word</strong></td><td><span class="badge badge-blue">Scheduled</span></td><td>2026-06-16</td><td style="font-size:11px;color:#6b7280">—</td></tr><tr><td><strong>Cory Williams</strong></td><td><span class="badge badge-blue">Scheduled</span></td><td>2026-06-15</td><td style="font-size:11px;color:#6b7280">diagnosis</td></tr><tr><td><strong>Darin Koenig</strong></td><td><span class="badge badge-green">Complete</span></td><td>2026-06-12</td><td style="font-size:11px;color:#6b7280">—</td></tr><tr><td><strong>Briana Johns</strong></td><td><span class="badge badge-blue">In Progress</span></td><td>2026-06-11</td><td style="font-size:11px;color:#6b7280">diagnosis, Facebook ad free service diag</td></tr><tr><td><strong>Peter Nwogu</strong></td><td><span class="badge badge-green">Complete</span></td><td>2026-06-09</td><td style="font-size:11px;color:#6b7280">—</td></tr><tr><td><strong>Charles Wall</strong></td><td><span class="badge badge-green">Complete</span></td><td>2026-06-05</td><td style="font-size:11px;color:#6b7280">—</td></tr><tr><td><strong>Arnold Scott</strong></td><td><span class="badge badge-green">Complete</span></td><td>2026-06-02</td><td style="font-size:11px;color:#6b7280">Facebook ad free service diagnosis</td></tr><tr><td><strong>Sam Njoroge</strong></td><td><span class="badge badge-green">Complete</span></td><td>2026-06-02</td><td style="font-size:11px;color:#6b7280">Facebook ad</td></tr><tr><td><strong>Tim Burgess</strong></td><td><span class="badge badge-green">Complete</span></td><td>2026-05-27</td><td style="font-size:11px;color:#6b7280">Residential, install</td></tr><tr><td><strong>Wesley Crist</strong></td><td><span class="badge badge-green">Complete</span></td><td>2026-05-27</td><td style="font-size:11px;color:#6b7280">Residential, install</td></tr><tr><td><strong>Peter Nwogu</strong></td><td><span class="badge badge-gray">Complete Rated</span></td><td>2026-05-26</td><td style="font-size:11px;color:#6b7280">—</td></tr><tr><td><strong>Peter Nwogu</strong></td><td><span class="badge badge-gray">Pro Canceled</span></td><td>2026-05-22</td><td style="font-size:11px;color:#6b7280">Residential, install</td></tr><tr><td><strong>Wesley Crist</strong></td><td><span class="badge badge-yellow">Needs Scheduling</span></td><td>2026-05-26</td><td style="font-size:11px;color:#6b7280">Residential, install, Quote</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="acc-card" onclick="toggle(this)">
+      <div class="acc-header">
+        <div class="acc-icon green">🏃</div>
+        <div class="acc-meta">
+          <div class="acc-title">Local Leap</div>
+          <div class="acc-sub">7 leads &nbsp;·&nbsp; 100% scheduled &nbsp;·&nbsp; 4 completed</div>
+        </div>
+        <span class="acc-pill green">7 Leads</span>
+        <span class="acc-chevron">&#9662;</span>
+      </div>
+      <div class="acc-body">
+        <div class="job-stats">
+          <div class="job-stat"><div class="job-stat-val" style="color:#1a56db">7</div><div class="job-stat-lbl">Total Leads</div></div>
+          <div class="job-stat"><div class="job-stat-val" style="color:#0e9f6e">100%</div><div class="job-stat-lbl">Schedule Rate</div></div>
+          <div class="job-stat"><div class="job-stat-val" style="color:#0e9f6e">4</div><div class="job-stat-lbl">Completed</div></div>
+          <div class="job-stat"><div class="job-stat-val" style="color:#d97706">0</div><div class="job-stat-lbl">Needs Scheduling</div></div>
+        </div>
+        <table class="data-table" style="margin-top:14px;">
+          <thead><tr><th>Customer</th><th>Status</th><th>Scheduled Date</th><th>Tags</th></tr></thead>
+          <tbody><tr><td><strong>Mattie Obie</strong></td><td><span class="badge badge-blue">Scheduled</span></td><td>2026-06-17</td><td style="font-size:11px;color:#6b7280">Residential, install</td></tr><tr><td><strong>Nancy Vetterick McElligott</strong></td><td><span class="badge badge-blue">In Progress</span></td><td>2026-06-13</td><td style="font-size:11px;color:#6b7280">Residential, install</td></tr><tr><td><strong>Gallion McElroy</strong></td><td><span class="badge badge-green">Complete</span></td><td>2026-06-13</td><td style="font-size:11px;color:#6b7280">Residential, install</td></tr><tr><td><strong>Jeannine Braham</strong></td><td><span class="badge badge-green">Complete</span></td><td>2026-06-12</td><td style="font-size:11px;color:#6b7280">Residential, install</td></tr><tr><td><strong>Wayne Delk</strong></td><td><span class="badge badge-green">Complete</span></td><td>2026-06-11</td><td style="font-size:11px;color:#6b7280">Residential, install</td></tr><tr><td><strong>Nasser Golshani</strong></td><td><span class="badge badge-green">Complete</span></td><td>2026-06-04</td><td style="font-size:11px;color:#6b7280">Residential, install, Quote</td></tr><tr><td><strong>Nasser Golshani</strong></td><td><span class="badge badge-blue">Scheduled</span></td><td>2026-05-20</td><td style="font-size:11px;color:#6b7280">Residential, install, Quote</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="acc-card" onclick="toggle(this)">
+      <div class="acc-header">
+        <div class="acc-icon orange">🔍</div>
+        <div class="acc-meta">
+          <div class="acc-title">Google</div>
+          <div class="acc-sub">6 leads &nbsp;·&nbsp; 33% scheduled &nbsp;·&nbsp; 1 completed</div>
+        </div>
+        <span class="acc-pill orange">6 Leads</span>
+        <span class="acc-chevron">&#9662;</span>
+      </div>
+      <div class="acc-body">
+        <div class="job-stats">
+          <div class="job-stat"><div class="job-stat-val" style="color:#1a56db">6</div><div class="job-stat-lbl">Total Leads</div></div>
+          <div class="job-stat"><div class="job-stat-val" style="color:#0e9f6e">33%</div><div class="job-stat-lbl">Schedule Rate</div></div>
+          <div class="job-stat"><div class="job-stat-val" style="color:#0e9f6e">1</div><div class="job-stat-lbl">Completed</div></div>
+          <div class="job-stat"><div class="job-stat-val" style="color:#d97706">1</div><div class="job-stat-lbl">Needs Scheduling</div></div>
+        </div>
+        <table class="data-table" style="margin-top:14px;">
+          <thead><tr><th>Customer</th><th>Status</th><th>Scheduled Date</th><th>Tags</th></tr></thead>
+          <tbody><tr><td><strong>Jaye Morris</strong></td><td><span class="badge badge-blue">In Progress</span></td><td>2026-06-15</td><td style="font-size:11px;color:#6b7280">—</td></tr><tr><td><strong>Howard Myers</strong></td><td><span class="badge badge-gray">Complete Rated</span></td><td>2026-06-10</td><td style="font-size:11px;color:#6b7280">diagnosis, repair</td></tr><tr><td><strong>Siyu Chen</strong></td><td><span class="badge badge-green">Complete</span></td><td>2026-05-29</td><td style="font-size:11px;color:#6b7280">—</td></tr><tr><td><strong>Chris Clark</strong></td><td><span class="badge badge-gray">Pro Canceled</span></td><td>2026-05-22</td><td style="font-size:11px;color:#6b7280">Residential, service</td></tr><tr><td><strong>Chris Clark</strong></td><td><span class="badge badge-gray">Complete Rated</span></td><td>2026-05-22</td><td style="font-size:11px;color:#6b7280">Residential, service</td></tr><tr><td><strong>Brian R. Fretwell</strong></td><td><span class="badge badge-yellow">Needs Scheduling</span></td><td>2026-05-23</td><td style="font-size:11px;color:#6b7280">—</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="acc-card" onclick="toggle(this)">
+      <div class="acc-header">
+        <div class="acc-icon purple">🔧</div>
+        <div class="acc-meta">
+          <div class="acc-title">Angi</div>
+          <div class="acc-sub">1 leads &nbsp;·&nbsp; 100% scheduled &nbsp;·&nbsp; 0 completed</div>
+        </div>
+        <span class="acc-pill purple">1 Leads</span>
+        <span class="acc-chevron">&#9662;</span>
+      </div>
+      <div class="acc-body">
+        <div class="job-stats">
+          <div class="job-stat"><div class="job-stat-val" style="color:#1a56db">1</div><div class="job-stat-lbl">Total Leads</div></div>
+          <div class="job-stat"><div class="job-stat-val" style="color:#0e9f6e">100%</div><div class="job-stat-lbl">Schedule Rate</div></div>
+          <div class="job-stat"><div class="job-stat-val" style="color:#0e9f6e">0</div><div class="job-stat-lbl">Completed</div></div>
+          <div class="job-stat"><div class="job-stat-val" style="color:#d97706">0</div><div class="job-stat-lbl">Needs Scheduling</div></div>
+        </div>
+        <table class="data-table" style="margin-top:14px;">
+          <thead><tr><th>Customer</th><th>Status</th><th>Scheduled Date</th><th>Tags</th></tr></thead>
+          <tbody><tr><td><strong>Teri Bogiel</strong></td><td><span class="badge badge-blue">Scheduled</span></td><td>2026-06-15</td><td style="font-size:11px;color:#6b7280">Residential, install</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+</div>
+<div class="footer">
+  <strong>Wright AI Labs &#8212; Business Intelligence (BI) Platform</strong> &nbsp;&middot;&nbsp; wrightailabs.com &nbsp;&middot;&nbsp; Confidential &#8212; For Internal Use Only &nbsp;&middot;&nbsp; Data: HCP via Mr. Griffin Agent
+</div>
+<script>function toggle(card){ card.classList.toggle('open'); }</script>
+</body>
+</html>
