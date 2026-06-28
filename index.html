@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Weather Masters — BI Lead & Appointment Tracking Report</title>
   <style>
-    :root {--blue:#1a56db;--blue-light:#e8f0fe;--green:#0e9f6e;--green-light:#def7ec;--orange:#ff5a1f;--orange-light:#fde8d8;--purple:#7c3aed;--purple-light:#ede9fe;--red:#dc2626;--red-light:#fee2e2;--yellow:#d97706;--yellow-light:#fef3c7;--navy:#1E2A5E;--bg:#f3f4f6;--card:#fff;--border:#e5e7eb;--text:#111827;--muted:#6b7280;}
+    :root{--blue:#1a56db;--blue-light:#e8f0fe;--green:#0e9f6e;--green-light:#def7ec;--orange:#ff5a1f;--orange-light:#fde8d8;--purple:#7c3aed;--purple-light:#ede9fe;--red:#dc2626;--red-light:#fee2e2;--yellow:#d97706;--yellow-light:#fef3c7;--navy:#1E2A5E;--bg:#f3f4f6;--card:#fff;--border:#e5e7eb;--text:#111827;--muted:#6b7280;}
     *{box-sizing:border-box;margin:0;padding:0}
     body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text)}
     .header{background:linear-gradient(135deg,#1E2A5E 0%,#2a3a7a 100%);color:white;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
@@ -17,16 +17,37 @@
     .live-dot{width:8px;height:8px;border-radius:50%;background:#34d399;animation:pulse 1.5s infinite}
     @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
     .container{max-width:1080px;margin:0 auto;padding:24px 16px}
+    /* Time filter bar */
+    .filter-bar{display:flex;align-items:center;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+    .filter-label{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-right:4px}
+    .filter-btn{padding:7px 18px;border-radius:20px;border:1px solid var(--border);background:white;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;color:var(--text)}
+    .filter-btn:hover{background:var(--blue-light);border-color:var(--blue);color:var(--blue)}
+    .filter-btn.active{background:var(--blue);color:white;border-color:var(--blue)}
     .section-heading{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin:24px 0 10px}
     .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px}
     .kpi-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;position:relative;overflow:hidden}
     .kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:12px 12px 0 0}
     .kpi-card.blue::before{background:var(--blue)}.kpi-card.green::before{background:var(--green)}.kpi-card.orange::before{background:var(--orange)}.kpi-card.yellow::before{background:var(--yellow)}.kpi-card.purple::before{background:var(--purple)}
-    .kpi-icon{font-size:22px;margin-bottom:8px}.kpi-value{font-size:28px;font-weight:800;line-height:1.1}.kpi-label{font-size:11px;color:var(--muted);margin-top:4px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}.kpi-note{font-size:10px;color:var(--muted);margin-top:4px}
+    .kpi-icon{font-size:22px;margin-bottom:8px}.kpi-value{font-size:28px;font-weight:800;line-height:1.1}.kpi-label{font-size:11px;color:var(--muted);margin-top:4px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
     .funnel{display:flex;align-items:stretch;margin-bottom:24px;border-radius:12px;overflow:hidden;border:1px solid var(--border);background:white}
     .funnel-step{flex:1;padding:18px 12px;text-align:center}
     .funnel-arrow{display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--muted);padding:0 2px;background:white}
     .funnel-val{font-size:26px;font-weight:800}.funnel-lbl{font-size:10px;color:var(--muted);margin-top:3px;font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+    /* Drilldown panels */
+    .drilldown{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:10px}
+    .drill-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:14px}
+    .drill-card{background:var(--bg);border-radius:10px;padding:12px 14px}
+    .drill-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+    .drill-value{font-size:22px;font-weight:800;margin-top:4px}
+    .drill-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:10px}
+    .drill-table th{background:var(--bg);padding:8px 10px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;color:var(--muted);border-bottom:2px solid var(--border)}
+    .drill-table td{padding:9px 10px;border-bottom:1px solid var(--border)}
+    .drill-table tr:last-child td{border-bottom:none}
+    .drill-table tr:hover td{background:#f9fafb}
+    .drill-btn{margin-top:8px;font-size:12px;font-weight:700;padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:white;cursor:pointer}
+    .drill-btn:hover{background:var(--blue-light);color:var(--blue)}
+    .empty-row td{text-align:center;color:var(--muted);font-style:italic;padding:20px}
+    /* Accordion */
     .acc-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:10px}
     .acc-header{padding:16px 20px;cursor:pointer;display:flex;align-items:center;gap:14px;user-select:none;transition:background .15s;flex-wrap:wrap}
     .acc-header:hover{background:#f9fafb}
@@ -48,17 +69,6 @@
     .data-table tr:last-child td{border-bottom:none}.data-table tr:hover td{background:#f9fafb}
     .badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600}
     .badge-green{background:var(--green-light);color:var(--green)}.badge-blue{background:var(--blue-light);color:var(--blue)}.badge-yellow{background:var(--yellow-light);color:var(--yellow)}.badge-red{background:var(--red-light);color:var(--red)}.badge-gray{background:#f3f4f6;color:#6b7280}
-    .drilldown{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:20px}
-    .drill-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:14px}
-    .drill-card{background:var(--bg);border-radius:10px;padding:12px 14px}
-    .drill-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
-    .drill-value{font-size:22px;font-weight:800;margin-top:4px}
-    .drill-sub{font-size:12px;color:var(--muted);margin-top:2px}
-    .drill-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:10px}
-    .drill-table th{background:var(--bg);padding:8px 10px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;color:var(--muted);border-bottom:2px solid var(--border)}
-    .drill-table td{padding:9px 10px;border-bottom:1px solid var(--border)}
-    .drill-table tr:hover td{background:#f9fafb}
-    .drill-btn{margin-top:8px;font-size:12px;font-weight:700;padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:white;cursor:pointer}
     .footer{background:var(--navy);color:rgba(255,255,255,.6);text-align:center;padding:14px;font-size:11px;margin-top:32px}
     .footer strong{color:rgba(255,255,255,.9)}
     @media(max-width:600px){.kpi-grid{grid-template-columns:repeat(2,1fr)};.funnel{flex-direction:column}}
@@ -70,7 +80,7 @@
     <div class="header-badge">&#9889; BI Enhanced</div>
     <div>
       <div class="header-title">Weather Masters of Georgia &#8212; BI Lead &amp; Appointment Tracking</div>
-      <div class="header-sub">Business Intelligence (BI) Report &nbsp;&middot;&nbsp; Last 30 Days through June 15, 2026 &nbsp;&middot;&nbsp; Powered by Wright AI Labs</div>
+      <div class="header-sub">Business Intelligence (BI) Report &nbsp;&middot;&nbsp; Powered by Wright AI Labs</div>
     </div>
   </div>
   <div>
@@ -78,266 +88,314 @@
     <div style="font-size:11px;opacity:.55;text-align:right;margin-top:4px;">Updated 6/15/2026</div>
   </div>
 </div>
+
 <div class="container">
-  <div class="section-heading">&#128202; 30-Day Lead Funnel</div>
-  <div class="funnel">
-    <div class="funnel-step"><div class="funnel-val" style="color:var(--blue)">27</div><div class="funnel-lbl">Total Leads</div></div>
-    <div class="funnel-arrow">&#8594;</div>
-    <div class="funnel-step"><div class="funnel-val" style="color:var(--green)">20</div><div class="funnel-lbl">Scheduled / Active</div></div>
-    <div class="funnel-arrow">&#8594;</div>
-    <div class="funnel-step"><div class="funnel-val" style="color:var(--green)">12</div><div class="funnel-lbl">Completed</div></div>
-    <div class="funnel-arrow">&#8594;</div>
-    <div class="funnel-step"><div class="funnel-val" style="color:var(--yellow)">2</div><div class="funnel-lbl">Needs Scheduling</div></div>
-    <div class="funnel-arrow">&#8594;</div>
-    <div class="funnel-step"><div class="funnel-val" style="color:var(--orange)">74%</div><div class="funnel-lbl">Schedule Rate</div></div>
+  <!-- Time Filter Bar -->
+  <div class="filter-bar">
+    <span class="filter-label">&#128197; Time Range:</span>
+    <button class="filter-btn" onclick="setFilter(7)">7 Days</button>
+    <button class="filter-btn active" onclick="setFilter(30)">30 Days</button>
+    <button class="filter-btn" onclick="setFilter(90)">90 Days</button>
+    <button class="filter-btn" onclick="setFilter(9999)">All Time</button>
   </div>
+
+  <!-- Funnel -->
+  <div class="section-heading">&#128202; Lead Funnel</div>
+  <div class="funnel" id="funnel">
+    <div class="funnel-step"><div class="funnel-val" id="f-total" style="color:var(--blue)">—</div><div class="funnel-lbl">Total Leads</div></div>
+    <div class="funnel-arrow">&#8594;</div>
+    <div class="funnel-step"><div class="funnel-val" id="f-active" style="color:var(--green)">—</div><div class="funnel-lbl">Scheduled / Active</div></div>
+    <div class="funnel-arrow">&#8594;</div>
+    <div class="funnel-step"><div class="funnel-val" id="f-complete" style="color:var(--green)">—</div><div class="funnel-lbl">Completed</div></div>
+    <div class="funnel-arrow">&#8594;</div>
+    <div class="funnel-step"><div class="funnel-val" id="f-needs" style="color:var(--yellow)">—</div><div class="funnel-lbl">Needs Scheduling</div></div>
+    <div class="funnel-arrow">&#8594;</div>
+    <div class="funnel-step"><div class="funnel-val" id="f-rate" style="color:var(--orange)">—</div><div class="funnel-lbl">Schedule Rate</div></div>
+  </div>
+
+  <!-- KPI Summary -->
   <div class="section-heading">&#128200; KPI Summary</div>
   <div class="kpi-grid">
-    <div class="kpi-card blue"><div class="kpi-icon">&#128229;</div><div class="kpi-value" style="color:var(--blue)">27</div><div class="kpi-label">Total Leads</div><div class="kpi-note">Last 30 days</div></div>
-    <div class="kpi-card green"><div class="kpi-icon">&#9989;</div><div class="kpi-value" style="color:var(--green)">12</div><div class="kpi-label">Completed Jobs</div><div class="kpi-note">From Claire leads</div></div>
-    <div class="kpi-card orange"><div class="kpi-icon">&#128197;</div><div class="kpi-value" style="color:var(--orange)">74%</div><div class="kpi-label">Schedule Rate</div><div class="kpi-note">Leads to appointments</div></div>
-    <div class="kpi-card yellow"><div class="kpi-icon">&#9203;</div><div class="kpi-value" style="color:var(--yellow)">2</div><div class="kpi-label">Needs Scheduling</div><div class="kpi-note">Action required</div></div>
-    <div class="kpi-card purple"><div class="kpi-icon">&#128227;</div><div class="kpi-value" style="color:var(--purple)">4</div><div class="kpi-label">Lead Sources</div><div class="kpi-note">FB &middot; Google &middot; LL &middot; Angi</div></div>
-    <div class="kpi-card blue"><div class="kpi-icon">&#127939;</div><div class="kpi-value" style="color:var(--blue)">7</div><div class="kpi-label">Local Leap Leads</div><div class="kpi-note">All residential installs</div></div>
+    <div class="kpi-card blue"><div class="kpi-icon">&#128229;</div><div class="kpi-value" id="kpi-total" style="color:var(--blue)">—</div><div class="kpi-label">Total Leads</div></div>
+    <div class="kpi-card green"><div class="kpi-icon">&#9989;</div><div class="kpi-value" id="kpi-complete" style="color:var(--green)">—</div><div class="kpi-label">Completed Jobs</div></div>
+    <div class="kpi-card orange"><div class="kpi-icon">&#128197;</div><div class="kpi-value" id="kpi-rate" style="color:var(--orange)">—</div><div class="kpi-label">Schedule Rate</div></div>
+    <div class="kpi-card yellow"><div class="kpi-icon">&#9203;</div><div class="kpi-value" id="kpi-needs" style="color:var(--yellow)">—</div><div class="kpi-label">Needs Scheduling</div></div>
+    <div class="kpi-card purple"><div class="kpi-icon">&#128227;</div><div class="kpi-value" id="kpi-sources" style="color:var(--purple)">—</div><div class="kpi-label">Lead Sources</div></div>
+    <div class="kpi-card blue"><div class="kpi-icon">&#127939;</div><div class="kpi-value" id="kpi-ll" style="color:var(--blue)">—</div><div class="kpi-label">Local Leap Leads</div></div>
   </div>
-  <div class="drilldown" id="total-leads">
-    <div class="section-heading">&#128587; Total Leads Drilldown</div>
-    <div class="drill-grid">
-      <div class="drill-card">
-        <div class="drill-label">Total Leads</div>
-        <div class="drill-value">27</div>
-        <div class="drill-sub">All lead sources past 30 days</div>
-        <button class="drill-btn" onclick="downloadCSV()">Download CSV</button>
-      </div>
-      <div class="drill-card">
-        <div class="drill-label">Scheduled</div>
-        <div class="drill-value">20</div>
-        <div class="drill-sub">Booked or active</div>
-      </div>
-      <div class="drill-card">
-        <div class="drill-label">Completed</div>
-        <div class="drill-value">12</div>
-        <div class="drill-sub">Closed out successfully</div>
-      </div>
-      <div class="drill-card">
-        <div class="drill-label">Needs Scheduling</div>
-        <div class="drill-value">2</div>
-        <div class="drill-sub">Action required</div>
-      </div>
-    </div>
-    <table class="drill-table">
+
+  <!-- Total Leads Drilldown -->
+  <div class="drilldown">
+    <div class="section-heading">&#128229; Total Leads — Source Breakdown</div>
+    <table class="drill-table" id="leads-table">
       <thead>
         <tr>
           <th>Lead Source</th>
           <th>Total Leads</th>
-          <th>Scheduled</th>
+          <th>Scheduled/Active</th>
           <th>Completed</th>
           <th>Needs Scheduling</th>
           <th>Schedule Rate</th>
         </tr>
       </thead>
-      <tbody>
-        <tr>
-          <td>Facebook</td>
-          <td>13</td>
-          <td>10</td>
-          <td>7</td>
-          <td>1</td>
-          <td>77%</td>
-        </tr>
-        <tr>
-          <td>Local Leap</td>
-          <td>7</td>
-          <td>7</td>
-          <td>4</td>
-          <td>0</td>
-          <td>100%</td>
-        </tr>
-        <tr>
-          <td>Google</td>
-          <td>6</td>
-          <td>2</td>
-          <td>1</td>
-          <td>1</td>
-          <td>33%</td>
-        </tr>
-        <tr>
-          <td>Angi</td>
-          <td>1</td>
-          <td>1</td>
-          <td>0</td>
-          <td>0</td>
-          <td>100%</td>
-        </tr>
-      </tbody>
+      <tbody id="leads-tbody"></tbody>
     </table>
+    <button class="drill-btn" style="margin-top:14px" onclick="downloadCSV()">&#11015; Download CSV</button>
   </div>
-  <div class="drilldown" id="completed-jobs">
-    <div class="section-heading">&#9989; Completed Jobs Drilldown</div>
-    <div class="drill-grid">
-      <div class="drill-card">
-        <div class="drill-label">Total Completed</div>
-        <div class="drill-value" style="color:var(--green)">12</div>
-        <div class="drill-sub">From Claire leads</div>
-      </div>
-      <div class="drill-card">
-        <div class="drill-label">Facebook</div>
-        <div class="drill-value">7</div>
-        <div class="drill-sub">58% of completed</div>
-      </div>
-      <div class="drill-card">
-        <div class="drill-label">Local Leap</div>
-        <div class="drill-value">4</div>
-        <div class="drill-sub">33% of completed</div>
-      </div>
-      <div class="drill-card">
-        <div class="drill-label">Google</div>
-        <div class="drill-value">1</div>
-        <div class="drill-sub">8% of completed</div>
-      </div>
-    </div>
+
+  <!-- Completed Jobs Drilldown -->
+  <div class="drilldown">
+    <div class="section-heading">&#9989; Completed Jobs</div>
+    <div class="drill-grid" id="completed-summary"></div>
     <table class="drill-table">
-      <thead>
-        <tr>
-          <th>Customer</th>
-          <th>Lead Source</th>
-          <th>Completed Date</th>
-          <th>Tags</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td><strong>Darin Koenig</strong></td><td>Facebook</td><td>2026-06-12</td><td style="font-size:11px;color:#6b7280">—</td></tr>
-        <tr><td><strong>Peter Nwogu</strong></td><td>Facebook</td><td>2026-06-09</td><td style="font-size:11px;color:#6b7280">—</td></tr>
-        <tr><td><strong>Charles Wall</strong></td><td>Facebook</td><td>2026-06-05</td><td style="font-size:11px;color:#6b7280">—</td></tr>
-        <tr><td><strong>Arnold Scott</strong></td><td>Facebook</td><td>2026-06-02</td><td style="font-size:11px;color:#6b7280">Facebook ad free service diagnosis</td></tr>
-        <tr><td><strong>Sam Njoroge</strong></td><td>Facebook</td><td>2026-06-02</td><td style="font-size:11px;color:#6b7280">Facebook ad</td></tr>
-        <tr><td><strong>Tim Burgess</strong></td><td>Facebook</td><td>2026-05-27</td><td style="font-size:11px;color:#6b7280">Residential, install</td></tr>
-        <tr><td><strong>Wesley Crist</strong></td><td>Facebook</td><td>2026-05-27</td><td style="font-size:11px;color:#6b7280">Residential, install</td></tr>
-        <tr><td><strong>Gallion McElroy</strong></td><td>Local Leap</td><td>2026-06-13</td><td style="font-size:11px;color:#6b7280">Residential, install</td></tr>
-        <tr><td><strong>Jeannine Braham</strong></td><td>Local Leap</td><td>2026-06-12</td><td style="font-size:11px;color:#6b7280">Residential, install</td></tr>
-        <tr><td><strong>Wayne Delk</strong></td><td>Local Leap</td><td>2026-06-11</td><td style="font-size:11px;color:#6b7280">Residential, install</td></tr>
-        <tr><td><strong>Nasser Golshani</strong></td><td>Local Leap</td><td>2026-06-04</td><td style="font-size:11px;color:#6b7280">Residential, install, Quote</td></tr>
-        <tr><td><strong>Siyu Chen</strong></td><td>Google</td><td>2026-05-29</td><td style="font-size:11px;color:#6b7280">—</td></tr>
-      </tbody>
+      <thead><tr><th>Customer</th><th>Lead Source</th><th>Date</th><th>Tags</th></tr></thead>
+      <tbody id="completed-tbody"></tbody>
     </table>
   </div>
+
+  <!-- Needs Scheduling Drilldown -->
+  <div class="drilldown">
+    <div class="section-heading">&#9203; Needs Scheduling — Action Required</div>
+    <table class="drill-table">
+      <thead><tr><th>Customer</th><th>Lead Source</th><th>Date</th><th>Tags</th></tr></thead>
+      <tbody id="needs-tbody"></tbody>
+    </table>
+  </div>
+
+  <!-- Lead Source Accordions -->
   <div class="section-heading">&#128227; Lead Sources &#8212; Click to Expand Details</div>
-  
-    <div class="acc-card" onclick="toggle(this)">
-      <div class="acc-header">
-        <div class="acc-icon blue">📘</div>
-        <div class="acc-meta">
-          <div class="acc-title">Facebook</div>
-          <div class="acc-sub">13 leads &nbsp;·&nbsp; 77% scheduled &nbsp;·&nbsp; 7 completed</div>
-        </div>
-        <span class="acc-pill blue">13 Leads</span>
-        <span class="acc-chevron">&#9662;</span>
-      </div>
-      <div class="acc-body">
-        <div class="job-stats">
-          <div class="job-stat"><div class="job-stat-val" style="color:#1a56db">13</div><div class="job-stat-lbl">Total Leads</div></div>
-          <div class="job-stat"><div class="job-stat-val" style="color:#0e9f6e">77%</div><div class="job-stat-lbl">Schedule Rate</div></div>
-          <div class="job-stat"><div class="job-stat-val" style="color:#0e9f6e">7</div><div class="job-stat-lbl">Completed</div></div>
-          <div class="job-stat"><div class="job-stat-val" style="color:#d97706">1</div><div class="job-stat-lbl">Needs Scheduling</div></div>
-        </div>
-        <table class="data-table" style="margin-top:14px;">
-          <thead><tr><th>Customer</th><th>Status</th><th>Scheduled Date</th><th>Tags</th></tr></thead>
-          <tbody><tr><td><strong>Brian Word</strong></td><td><span class="badge badge-blue">Scheduled</span></td><td>2026-06-16</td><td style="font-size:11px;color:#6b7280">—</td></tr><tr><td><strong>Cory Williams</strong></td><td><span class="badge badge-blue">Scheduled</span></td><td>2026-06-15</td><td style="font-size:11px;color:#6b7280">diagnosis</td></tr><tr><td><strong>Darin Koenig</strong></td><td><span class="badge badge-green">Complete</span></td><td>2026-06-12</td><td style="font-size:11px;color:#6b7280">—</td></tr><tr><td><strong>Briana Johns</strong></td><td><span class="badge badge-blue">In Progress</span></td><td>2026-06-11</td><td style="font-size:11px;color:#6b7280">diagnosis, Facebook ad free service diag</td></tr><tr><td><strong>Peter Nwogu</strong></td><td><span class="badge badge-green">Complete</span></td><td>2026-06-09</td><td style="font-size:11px;color:#6b7280">—</td></tr><tr><td><strong>Charles Wall</strong></td><td><span class="badge badge-green">Complete</span></td><td>2026-06-05</td><td style="font-size:11px;color:#6b7280">—</td></tr><tr><td><strong>Arnold Scott</strong></td><td><span class="badge badge-green">Complete</span></td><td>2026-06-02</td><td style="font-size:11px;color:#6b7280">Facebook ad free service diagnosis</td></tr><tr><td><strong>Sam Njoroge</strong></td><td><span class="badge badge-green">Complete</span></td><td>2026-06-02</td><td style="font-size:11px;color:#6b7280">Facebook ad</td></tr><tr><td><strong>Tim Burgess</strong></td><td><span class="badge badge-green">Complete</span></td><td>2026-05-27</td><td style="font-size:11px;color:#6b7280">Residential, install</td></tr><tr><td><strong>Wesley Crist</strong></td><td><span class="badge badge-green">Complete</span></td><td>2026-05-27</td><td style="font-size:11px;color:#6b7280">Residential, install</td></tr><tr><td><strong>Peter Nwogu</strong></td><td><span class="badge badge-gray">Complete Rated</span></td><td>2026-05-26</td><td style="font-size:11px;color:#6b7280">—</td></tr><tr><td><strong>Peter Nwogu</strong></td><td><span class="badge badge-gray">Pro Canceled</span></td><td>2026-05-22</td><td style="font-size:11px;color:#6b7280">Residential, install</td></tr><tr><td><strong>Wesley Crist</strong></td><td><span class="badge badge-yellow">Needs Scheduling</span></td><td>2026-05-26</td><td style="font-size:11px;color:#6b7280">Residential, install, Quote</td></tr></tbody>
-        </table>
-      </div>
-    </div>
-    <div class="acc-card" onclick="toggle(this)">
-      <div class="acc-header">
-        <div class="acc-icon green">🏃</div>
-        <div class="acc-meta">
-          <div class="acc-title">Local Leap</div>
-          <div class="acc-sub">7 leads &nbsp;·&nbsp; 100% scheduled &nbsp;·&nbsp; 4 completed</div>
-        </div>
-        <span class="acc-pill green">7 Leads</span>
-        <span class="acc-chevron">&#9662;</span>
-      </div>
-      <div class="acc-body">
-        <div class="job-stats">
-          <div class="job-stat"><div class="job-stat-val" style="color:#1a56db">7</div><div class="job-stat-lbl">Total Leads</div></div>
-          <div class="job-stat"><div class="job-stat-val" style="color:#0e9f6e">100%</div><div class="job-stat-lbl">Schedule Rate</div></div>
-          <div class="job-stat"><div class="job-stat-val" style="color:#0e9f6e">4</div><div class="job-stat-lbl">Completed</div></div>
-          <div class="job-stat"><div class="job-stat-val" style="color:#d97706">0</div><div class="job-stat-lbl">Needs Scheduling</div></div>
-        </div>
-        <table class="data-table" style="margin-top:14px;">
-          <thead><tr><th>Customer</th><th>Status</th><th>Scheduled Date</th><th>Tags</th></tr></thead>
-          <tbody><tr><td><strong>Mattie Obie</strong></td><td><span class="badge badge-blue">Scheduled</span></td><td>2026-06-17</td><td style="font-size:11px;color:#6b7280">Residential, install</td></tr><tr><td><strong>Nancy Vetterick McElligott</strong></td><td><span class="badge badge-blue">In Progress</span></td><td>2026-06-13</td><td style="font-size:11px;color:#6b7280">Residential, install</td></tr><tr><td><strong>Gallion McElroy</strong></td><td><span class="badge badge-green">Complete</span></td><td>2026-06-13</td><td style="font-size:11px;color:#6b7280">Residential, install</td></tr><tr><td><strong>Jeannine Braham</strong></td><td><span class="badge badge-green">Complete</span></td><td>2026-06-12</td><td style="font-size:11px;color:#6b7280">Residential, install</td></tr><tr><td><strong>Wayne Delk</strong></td><td><span class="badge badge-green">Complete</span></td><td>2026-06-11</td><td style="font-size:11px;color:#6b7280">Residential, install</td></tr><tr><td><strong>Nasser Golshani</strong></td><td><span class="badge badge-green">Complete</span></td><td>2026-06-04</td><td style="font-size:11px;color:#6b7280">Residential, install, Quote</td></tr><tr><td><strong>Nasser Golshani</strong></td><td><span class="badge badge-blue">Scheduled</span></td><td>2026-05-20</td><td style="font-size:11px;color:#6b7280">Residential, install, Quote</td></tr></tbody>
-        </table>
-      </div>
-    </div>
-    <div class="acc-card" onclick="toggle(this)">
-      <div class="acc-header">
-        <div class="acc-icon orange">🔍</div>
-        <div class="acc-meta">
-          <div class="acc-title">Google</div>
-          <div class="acc-sub">6 leads &nbsp;·&nbsp; 33% scheduled &nbsp;·&nbsp; 1 completed</div>
-        </div>
-        <span class="acc-pill orange">6 Leads</span>
-        <span class="acc-chevron">&#9662;</span>
-      </div>
-      <div class="acc-body">
-        <div class="job-stats">
-          <div class="job-stat"><div class="job-stat-val" style="color:#1a56db">6</div><div class="job-stat-lbl">Total Leads</div></div>
-          <div class="job-stat"><div class="job-stat-val" style="color:#0e9f6e">33%</div><div class="job-stat-lbl">Schedule Rate</div></div>
-          <div class="job-stat"><div class="job-stat-val" style="color:#0e9f6e">1</div><div class="job-stat-lbl">Completed</div></div>
-          <div class="job-stat"><div class="job-stat-val" style="color:#d97706">1</div><div class="job-stat-lbl">Needs Scheduling</div></div>
-        </div>
-        <table class="data-table" style="margin-top:14px;">
-          <thead><tr><th>Customer</th><th>Status</th><th>Scheduled Date</th><th>Tags</th></tr></thead>
-          <tbody><tr><td><strong>Jaye Morris</strong></td><td><span class="badge badge-blue">In Progress</span></td><td>2026-06-15</td><td style="font-size:11px;color:#6b7280">—</td></tr><tr><td><strong>Howard Myers</strong></td><td><span class="badge badge-gray">Complete Rated</span></td><td>2026-06-10</td><td style="font-size:11px;color:#6b7280">diagnosis, repair</td></tr><tr><td><strong>Siyu Chen</strong></td><td><span class="badge badge-green">Complete</span></td><td>2026-05-29</td><td style="font-size:11px;color:#6b7280">—</td></tr><tr><td><strong>Chris Clark</strong></td><td><span class="badge badge-gray">Pro Canceled</span></td><td>2026-05-22</td><td style="font-size:11px;color:#6b7280">Residential, service</td></tr><tr><td><strong>Chris Clark</strong></td><td><span class="badge badge-gray">Complete Rated</span></td><td>2026-05-22</td><td style="font-size:11px;color:#6b7280">Residential, service</td></tr><tr><td><strong>Brian R. Fretwell</strong></td><td><span class="badge badge-yellow">Needs Scheduling</span></td><td>2026-05-23</td><td style="font-size:11px;color:#6b7280">—</td></tr></tbody>
-        </table>
-      </div>
-    </div>
-    <div class="acc-card" onclick="toggle(this)">
-      <div class="acc-header">
-        <div class="acc-icon purple">🔧</div>
-        <div class="acc-meta">
-          <div class="acc-title">Angi</div>
-          <div class="acc-sub">1 leads &nbsp;·&nbsp; 100% scheduled &nbsp;·&nbsp; 0 completed</div>
-        </div>
-        <span class="acc-pill purple">1 Leads</span>
-        <span class="acc-chevron">&#9662;</span>
-      </div>
-      <div class="acc-body">
-        <div class="job-stats">
-          <div class="job-stat"><div class="job-stat-val" style="color:#1a56db">1</div><div class="job-stat-lbl">Total Leads</div></div>
-          <div class="job-stat"><div class="job-stat-val" style="color:#0e9f6e">100%</div><div class="job-stat-lbl">Schedule Rate</div></div>
-          <div class="job-stat"><div class="job-stat-val" style="color:#0e9f6e">0</div><div class="job-stat-lbl">Completed</div></div>
-          <div class="job-stat"><div class="job-stat-val" style="color:#d97706">0</div><div class="job-stat-lbl">Needs Scheduling</div></div>
-        </div>
-        <table class="data-table" style="margin-top:14px;">
-          <thead><tr><th>Customer</th><th>Status</th><th>Scheduled Date</th><th>Tags</th></tr></thead>
-          <tbody><tr><td><strong>Teri Bogiel</strong></td><td><span class="badge badge-blue">Scheduled</span></td><td>2026-06-15</td><td style="font-size:11px;color:#6b7280">Residential, install</td></tr></tbody>
-        </table>
-      </div>
-    </div>
+  <div id="accordions"></div>
 </div>
+
 <div class="footer">
   <strong>Wright AI Labs &#8212; Business Intelligence (BI) Platform</strong> &nbsp;&middot;&nbsp; wrightailabs.com &nbsp;&middot;&nbsp; Confidential &#8212; For Internal Use Only &nbsp;&middot;&nbsp; Data: HCP via Mr. Griffin Agent
 </div>
+
 <script>
-function toggle(card){ card.classList.toggle('open'); }
+// ── All Lead Data ──────────────────────────────────────────
+const REPORT_DATE = new Date('2026-06-15');
+
+const ALL_LEADS = [
+  // Facebook
+  {name:'Brian Word',        source:'Facebook',   status:'Scheduled',       date:'2026-06-16', tags:'—'},
+  {name:'Cory Williams',     source:'Facebook',   status:'Scheduled',       date:'2026-06-15', tags:'diagnosis'},
+  {name:'Darin Koenig',      source:'Facebook',   status:'Complete',         date:'2026-06-12', tags:'—'},
+  {name:'Briana Johns',      source:'Facebook',   status:'In Progress',      date:'2026-06-11', tags:'diagnosis, Facebook ad free service diag'},
+  {name:'Peter Nwogu',       source:'Facebook',   status:'Complete',         date:'2026-06-09', tags:'—'},
+  {name:'Charles Wall',      source:'Facebook',   status:'Complete',         date:'2026-06-05', tags:'—'},
+  {name:'Arnold Scott',      source:'Facebook',   status:'Complete',         date:'2026-06-02', tags:'Facebook ad free service diagnosis'},
+  {name:'Sam Njoroge',       source:'Facebook',   status:'Complete',         date:'2026-06-02', tags:'Facebook ad'},
+  {name:'Tim Burgess',       source:'Facebook',   status:'Complete',         date:'2026-05-27', tags:'Residential, install'},
+  {name:'Wesley Crist',      source:'Facebook',   status:'Complete',         date:'2026-05-27', tags:'Residential, install'},
+  {name:'Peter Nwogu',       source:'Facebook',   status:'Complete Rated',   date:'2026-05-26', tags:'—'},
+  {name:'Peter Nwogu',       source:'Facebook',   status:'Pro Canceled',     date:'2026-05-22', tags:'Residential, install'},
+  {name:'Wesley Crist',      source:'Facebook',   status:'Needs Scheduling', date:'2026-05-26', tags:'Residential, install, Quote'},
+  // Local Leap
+  {name:'Mattie Obie',                    source:'Local Leap', status:'Scheduled',  date:'2026-06-17', tags:'Residential, install'},
+  {name:'Nancy Vetterick McElligott',     source:'Local Leap', status:'In Progress',date:'2026-06-13', tags:'Residential, install'},
+  {name:'Gallion McElroy',                source:'Local Leap', status:'Complete',   date:'2026-06-13', tags:'Residential, install'},
+  {name:'Jeannine Braham',                source:'Local Leap', status:'Complete',   date:'2026-06-12', tags:'Residential, install'},
+  {name:'Wayne Delk',                     source:'Local Leap', status:'Complete',   date:'2026-06-11', tags:'Residential, install'},
+  {name:'Nasser Golshani',                source:'Local Leap', status:'Complete',   date:'2026-06-04', tags:'Residential, install, Quote'},
+  {name:'Nasser Golshani',                source:'Local Leap', status:'Scheduled',  date:'2026-05-20', tags:'Residential, install, Quote'},
+  // Google
+  {name:'Jaye Morris',       source:'Google', status:'In Progress',      date:'2026-06-15', tags:'—'},
+  {name:'Howard Myers',      source:'Google', status:'Complete Rated',   date:'2026-06-10', tags:'diagnosis, repair'},
+  {name:'Siyu Chen',         source:'Google', status:'Complete',         date:'2026-05-29', tags:'—'},
+  {name:'Chris Clark',       source:'Google', status:'Pro Canceled',     date:'2026-05-22', tags:'Residential, service'},
+  {name:'Chris Clark',       source:'Google', status:'Complete Rated',   date:'2026-05-22', tags:'Residential, service'},
+  {name:'Brian R. Fretwell', source:'Google', status:'Needs Scheduling', date:'2026-05-23', tags:'—'},
+  // Angi
+  {name:'Teri Bogiel',       source:'Angi',   status:'Scheduled',        date:'2026-06-15', tags:'Residential, install'},
+];
+
+const SOURCE_META = {
+  'Facebook':   {icon:'📘', color:'blue'},
+  'Local Leap': {icon:'🏃', color:'green'},
+  'Google':     {icon:'🔍', color:'orange'},
+  'Angi':       {icon:'🔧', color:'purple'},
+};
+
+// ── Status helpers ─────────────────────────────────────────
+function isComplete(s){ return ['Complete','Complete Rated'].includes(s); }
+function isActive(s)  { return ['Scheduled','In Progress'].includes(s); }
+function isNeeds(s)   { return s === 'Needs Scheduling'; }
+
+function badgeClass(s){
+  if(isComplete(s)) return 'badge-green';
+  if(isActive(s))   return 'badge-blue';
+  if(isNeeds(s))    return 'badge-yellow';
+  return 'badge-gray';
+}
+
+// ── Filter ─────────────────────────────────────────────────
+let currentDays = 30;
+
+function setFilter(days){
+  currentDays = days;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  render();
+}
+
+function inRange(lead){
+  const d = new Date(lead.date);
+  const diff = (REPORT_DATE - d) / (1000*60*60*24);
+  return diff <= currentDays && diff >= -2; // allow +2 days future buffer
+}
+
+// ── Render ─────────────────────────────────────────────────
+function render(){
+  const leads = ALL_LEADS.filter(inRange);
+
+  const total    = leads.length;
+  const active   = leads.filter(l=>isActive(l.status)).length;
+  const complete = leads.filter(l=>isComplete(l.status)).length;
+  const needs    = leads.filter(l=>isNeeds(l.status)).length;
+  const rate     = total ? Math.round((active+complete)/total*100) : 0;
+
+  const sources = [...new Set(leads.map(l=>l.source))];
+  const llCount = leads.filter(l=>l.source==='Local Leap').length;
+
+  // Funnel
+  document.getElementById('f-total').textContent   = total;
+  document.getElementById('f-active').textContent  = active;
+  document.getElementById('f-complete').textContent= complete;
+  document.getElementById('f-needs').textContent   = needs;
+  document.getElementById('f-rate').textContent    = rate+'%';
+
+  // KPIs
+  document.getElementById('kpi-total').textContent   = total;
+  document.getElementById('kpi-complete').textContent= complete;
+  document.getElementById('kpi-rate').textContent    = rate+'%';
+  document.getElementById('kpi-needs').textContent   = needs;
+  document.getElementById('kpi-sources').textContent = sources.length;
+  document.getElementById('kpi-ll').textContent      = llCount;
+
+  // Total Leads source table
+  const ltbody = document.getElementById('leads-tbody');
+  ltbody.innerHTML = '';
+  Object.keys(SOURCE_META).forEach(src=>{
+    const sl = leads.filter(l=>l.source===src);
+    if(!sl.length) return;
+    const sc = sl.filter(l=>isComplete(l.status)).length;
+    const sa = sl.filter(l=>isActive(l.status)).length;
+    const sn = sl.filter(l=>isNeeds(l.status)).length;
+    const sr = sl.length ? Math.round((sa+sc)/sl.length*100) : 0;
+    ltbody.innerHTML += `<tr>
+      <td>${SOURCE_META[src].icon} <strong>${src}</strong></td>
+      <td>${sl.length}</td><td>${sa}</td><td>${sc}</td><td>${sn}</td>
+      <td><strong>${sr}%</strong></td>
+    </tr>`;
+  });
+  if(!ltbody.innerHTML) ltbody.innerHTML = '<tr class="empty-row"><td colspan="6">No leads in this timeframe</td></tr>';
+
+  // Completed Jobs
+  const completedLeads = leads.filter(l=>isComplete(l.status));
+  const csummary = document.getElementById('completed-summary');
+  csummary.innerHTML = `
+    <div class="drill-card"><div class="drill-label">Total Completed</div><div class="drill-value" style="color:var(--green)">${completedLeads.length}</div></div>
+    ${Object.keys(SOURCE_META).map(src=>{
+      const c = completedLeads.filter(l=>l.source===src).length;
+      if(!c) return '';
+      const pct = completedLeads.length ? Math.round(c/completedLeads.length*100) : 0;
+      return `<div class="drill-card"><div class="drill-label">${src}</div><div class="drill-value">${c}</div><div style="font-size:12px;color:var(--muted)">${pct}% of completed</div></div>`;
+    }).join('')}
+  `;
+  const ctbody = document.getElementById('completed-tbody');
+  ctbody.innerHTML = completedLeads.length
+    ? completedLeads.map(l=>`<tr>
+        <td><strong>${l.name}</strong></td>
+        <td>${SOURCE_META[l.source]?.icon||''} ${l.source}</td>
+        <td>${l.date}</td>
+        <td style="font-size:11px;color:#6b7280">${l.tags}</td>
+      </tr>`).join('')
+    : '<tr class="empty-row"><td colspan="4">No completed jobs in this timeframe</td></tr>';
+
+  // Needs Scheduling
+  const needsLeads = leads.filter(l=>isNeeds(l.status));
+  const ntbody = document.getElementById('needs-tbody');
+  ntbody.innerHTML = needsLeads.length
+    ? needsLeads.map(l=>`<tr>
+        <td><strong>${l.name}</strong></td>
+        <td>${SOURCE_META[l.source]?.icon||''} ${l.source}</td>
+        <td>${l.date}</td>
+        <td style="font-size:11px;color:#6b7280">${l.tags}</td>
+      </tr>`).join('')
+    : '<tr class="empty-row"><td colspan="4">No leads need scheduling in this timeframe ✅</td></tr>';
+
+  // Accordions
+  const accDiv = document.getElementById('accordions');
+  accDiv.innerHTML = '';
+  Object.keys(SOURCE_META).forEach(src=>{
+    const sl = leads.filter(l=>l.source===src);
+    if(!sl.length) return;
+    const meta = SOURCE_META[src];
+    const sc = sl.filter(l=>isComplete(l.status)).length;
+    const sa = sl.filter(l=>isActive(l.status)).length;
+    const sn = sl.filter(l=>isNeeds(l.status)).length;
+    const sr = sl.length ? Math.round((sa+sc)/sl.length*100) : 0;
+    accDiv.innerHTML += `
+      <div class="acc-card" onclick="this.classList.toggle('open')">
+        <div class="acc-header">
+          <div class="acc-icon ${meta.color}">${meta.icon}</div>
+          <div class="acc-meta">
+            <div class="acc-title">${src}</div>
+            <div class="acc-sub">${sl.length} leads &nbsp;·&nbsp; ${sr}% scheduled &nbsp;·&nbsp; ${sc} completed</div>
+          </div>
+          <span class="acc-pill ${meta.color}">${sl.length} Leads</span>
+          <span class="acc-chevron">&#9662;</span>
+        </div>
+        <div class="acc-body">
+          <div class="job-stats">
+            <div class="job-stat"><div class="job-stat-val" style="color:var(--blue)">${sl.length}</div><div class="job-stat-lbl">Total Leads</div></div>
+            <div class="job-stat"><div class="job-stat-val" style="color:var(--green)">${sr}%</div><div class="job-stat-lbl">Schedule Rate</div></div>
+            <div class="job-stat"><div class="job-stat-val" style="color:var(--green)">${sc}</div><div class="job-stat-lbl">Completed</div></div>
+            <div class="job-stat"><div class="job-stat-val" style="color:var(--yellow)">${sn}</div><div class="job-stat-lbl">Needs Scheduling</div></div>
+          </div>
+          <table class="data-table" style="margin-top:14px">
+            <thead><tr><th>Customer</th><th>Status</th><th>Date</th><th>Tags</th></tr></thead>
+            <tbody>${sl.map(l=>`
+              <tr>
+                <td><strong>${l.name}</strong></td>
+                <td><span class="badge ${badgeClass(l.status)}">${l.status}</span></td>
+                <td>${l.date}</td>
+                <td style="font-size:11px;color:#6b7280">${l.tags}</td>
+              </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>`;
+  });
+  if(!accDiv.innerHTML) accDiv.innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted)">No leads in this timeframe.</div>';
+}
+
+// ── CSV Export ─────────────────────────────────────────────
 function downloadCSV(){
-  const data = [
-    ['Lead Source', 'Total Leads', 'Scheduled', 'Completed', 'Needs Scheduling', 'Schedule Rate'],
-    ['Facebook', 13, 10, 7, 1, '77%'],
-    ['Local Leap', 7, 7, 4, 0, '100%'],
-    ['Google', 6, 2, 1, 1, '33%'],
-    ['Angi', 1, 1, 0, 0, '100%'],
-  ];
-  let csvContent = data.map(e => e.join(',')).join('\n');
-  const blob = new Blob([csvContent], {type: 'text/csv;charset=utf-8;'});
+  const leads = ALL_LEADS.filter(inRange);
+  const sources = Object.keys(SOURCE_META);
+  const rows = [['Lead Source','Total Leads','Scheduled/Active','Completed','Needs Scheduling','Schedule Rate']];
+  sources.forEach(src=>{
+    const sl = leads.filter(l=>l.source===src);
+    if(!sl.length) return;
+    const sc = sl.filter(l=>isComplete(l.status)).length;
+    const sa = sl.filter(l=>isActive(l.status)).length;
+    const sn = sl.filter(l=>isNeeds(l.status)).length;
+    const sr = sl.length ? Math.round((sa+sc)/sl.length*100)+'%' : '0%';
+    rows.push([src,sl.length,sa,sc,sn,sr]);
+  });
+  const csv = rows.map(r=>r.join(',')).join('\n');
+  const blob = new Blob([csv],{type:'text/csv;charset=utf-8;'});
   const link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
-  link.download = 'total_leads_breakdown.csv';
+  link.download = `leads_${currentDays}day.csv`;
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
 }
+
+// Init
+render();
 </script>
 </body>
 </html>
