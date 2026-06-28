@@ -48,6 +48,17 @@
     .data-table tr:last-child td{border-bottom:none}.data-table tr:hover td{background:#f9fafb}
     .badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600}
     .badge-green{background:var(--green-light);color:var(--green)}.badge-blue{background:var(--blue-light);color:var(--blue)}.badge-yellow{background:var(--yellow-light);color:var(--yellow)}.badge-red{background:var(--red-light);color:var(--red)}.badge-gray{background:#f3f4f6;color:#6b7280}
+    .drilldown{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:20px}
+    .drill-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:14px}
+    .drill-card{background:var(--bg);border-radius:10px;padding:12px 14px}
+    .drill-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+    .drill-value{font-size:22px;font-weight:800;margin-top:4px}
+    .drill-sub{font-size:12px;color:var(--muted);margin-top:2px}
+    .drill-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:10px}
+    .drill-table th{background:var(--bg);padding:8px 10px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;color:var(--muted);border-bottom:2px solid var(--border)}
+    .drill-table td{padding:9px 10px;border-bottom:1px solid var(--border)}
+    .drill-table tr:hover td{background:#f9fafb}
+    .drill-btn{margin-top:8px;font-size:12px;font-weight:700;padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:white;cursor:pointer}
     .footer{background:var(--navy);color:rgba(255,255,255,.6);text-align:center;padding:14px;font-size:11px;margin-top:32px}
     .footer strong{color:rgba(255,255,255,.9)}
     @media(max-width:600px){.kpi-grid{grid-template-columns:repeat(2,1fr)};.funnel{flex-direction:column}}
@@ -88,6 +99,78 @@
     <div class="kpi-card yellow"><div class="kpi-icon">&#9203;</div><div class="kpi-value" style="color:var(--yellow)">2</div><div class="kpi-label">Needs Scheduling</div><div class="kpi-note">Action required</div></div>
     <div class="kpi-card purple"><div class="kpi-icon">&#128227;</div><div class="kpi-value" style="color:var(--purple)">4</div><div class="kpi-label">Lead Sources</div><div class="kpi-note">FB &middot; Google &middot; LL &middot; Angi</div></div>
     <div class="kpi-card blue"><div class="kpi-icon">&#127939;</div><div class="kpi-value" style="color:var(--blue)">7</div><div class="kpi-label">Local Leap Leads</div><div class="kpi-note">All residential installs</div></div>
+  </div>
+  <div class="drilldown" id="total-leads">
+    <div class="section-heading">&#128587; Total Leads Drilldown</div>
+    <div class="drill-grid">
+      <div class="drill-card">
+        <div class="drill-label">Total Leads</div>
+        <div class="drill-value">27</div>
+        <div class="drill-sub">All lead sources past 30 days</div>
+        <button class="drill-btn" onclick="downloadCSV()">Download CSV</button>
+      </div>
+      <div class="drill-card">
+        <div class="drill-label">Scheduled</div>
+        <div class="drill-value">20</div>
+        <div class="drill-sub">Booked or active</div>
+      </div>
+      <div class="drill-card">
+        <div class="drill-label">Completed</div>
+        <div class="drill-value">12</div>
+        <div class="drill-sub">Closed out successfully</div>
+      </div>
+      <div class="drill-card">
+        <div class="drill-label">Needs Scheduling</div>
+        <div class="drill-value">2</div>
+        <div class="drill-sub">Action required</div>
+      </div>
+    </div>
+    <table class="drill-table">
+      <thead>
+        <tr>
+          <th>Lead Source</th>
+          <th>Total Leads</th>
+          <th>Scheduled</th>
+          <th>Completed</th>
+          <th>Needs Scheduling</th>
+          <th>Schedule Rate</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Facebook</td>
+          <td>13</td>
+          <td>10</td>
+          <td>7</td>
+          <td>1</td>
+          <td>77%</td>
+        </tr>
+        <tr>
+          <td>Local Leap</td>
+          <td>7</td>
+          <td>7</td>
+          <td>4</td>
+          <td>0</td>
+          <td>100%</td>
+        </tr>
+        <tr>
+          <td>Google</td>
+          <td>6</td>
+          <td>2</td>
+          <td>1</td>
+          <td>1</td>
+          <td>33%</td>
+        </tr>
+        <tr>
+          <td>Angi</td>
+          <td>1</td>
+          <td>1</td>
+          <td>0</td>
+          <td>0</td>
+          <td>100%</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
   <div class="section-heading">&#128227; Lead Sources &#8212; Click to Expand Details</div>
   
@@ -187,6 +270,25 @@
 <div class="footer">
   <strong>Wright AI Labs &#8212; Business Intelligence (BI) Platform</strong> &nbsp;&middot;&nbsp; wrightailabs.com &nbsp;&middot;&nbsp; Confidential &#8212; For Internal Use Only &nbsp;&middot;&nbsp; Data: HCP via Mr. Griffin Agent
 </div>
-<script>function toggle(card){ card.classList.toggle('open'); }</script>
+<script>
+function toggle(card){ card.classList.toggle('open'); }
+function downloadCSV(){
+  const data = [
+    ['Lead Source', 'Total Leads', 'Scheduled', 'Completed', 'Needs Scheduling', 'Schedule Rate'],
+    ['Facebook', 13, 10, 7, 1, '77%'],
+    ['Local Leap', 7, 7, 4, 0, '100%'],
+    ['Google', 6, 2, 1, 1, '33%'],
+    ['Angi', 1, 1, 0, 0, '100%'],
+  ];
+  let csvContent = data.map(e => e.join(',')).join('\n');
+  const blob = new Blob([csvContent], {type: 'text/csv;charset=utf-8;'});
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'total_leads_breakdown.csv';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+</script>
 </body>
 </html>
