@@ -25,7 +25,8 @@
     .filter-btn.active{background:var(--blue);color:white;border-color:var(--blue)}
     .section-heading{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin:24px 0 10px}
     .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px}
-    .kpi-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;position:relative;overflow:hidden}
+    .kpi-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;position:relative;overflow:hidden;cursor:pointer;transition:box-shadow .15s,transform .15s}
+    .kpi-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.1);transform:translateY(-2px)}
     .kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:12px 12px 0 0}
     .kpi-card.blue::before{background:var(--blue)}.kpi-card.green::before{background:var(--green)}.kpi-card.orange::before{background:var(--orange)}.kpi-card.yellow::before{background:var(--yellow)}.kpi-card.purple::before{background:var(--purple)}
     .kpi-icon{font-size:22px;margin-bottom:8px}.kpi-value{font-size:28px;font-weight:800;line-height:1.1}.kpi-label{font-size:11px;color:var(--muted);margin-top:4px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
@@ -85,7 +86,7 @@
   </div>
   <div>
     <div class="live-badge"><span class="live-dot"></span> Live Data</div>
-    <div style="font-size:11px;opacity:.55;text-align:right;margin-top:4px;">Updated 6/15/2026</div>
+    <div style="font-size:11px;opacity:.55;text-align:right;margin-top:4px;">Updated 7/1/2026</div>
   </div>
 </div>
 
@@ -95,6 +96,7 @@
     <span class="filter-label">&#128197; Time Range:</span>
     <button class="filter-btn" onclick="setFilter(7)">7 Days</button>
     <button class="filter-btn active" onclick="setFilter(30)">30 Days</button>
+    <button class="filter-btn" onclick="setFilter(60)">60 Days</button>
     <button class="filter-btn" onclick="setFilter(90)">90 Days</button>
     <button class="filter-btn" onclick="setFilter(9999)">All Time</button>
   </div>
@@ -116,16 +118,17 @@
   <!-- KPI Summary -->
   <div class="section-heading">&#128200; KPI Summary</div>
   <div class="kpi-grid">
-    <div class="kpi-card blue"><div class="kpi-icon">&#128229;</div><div class="kpi-value" id="kpi-total" style="color:var(--blue)">—</div><div class="kpi-label">Total Leads</div></div>
-    <div class="kpi-card green"><div class="kpi-icon">&#9989;</div><div class="kpi-value" id="kpi-complete" style="color:var(--green)">—</div><div class="kpi-label">Completed Jobs</div></div>
-    <div class="kpi-card orange"><div class="kpi-icon">&#128197;</div><div class="kpi-value" id="kpi-rate" style="color:var(--orange)">—</div><div class="kpi-label">Schedule Rate</div></div>
-    <div class="kpi-card yellow"><div class="kpi-icon">&#9203;</div><div class="kpi-value" id="kpi-needs" style="color:var(--yellow)">—</div><div class="kpi-label">Needs Scheduling</div></div>
-    <div class="kpi-card purple"><div class="kpi-icon">&#128227;</div><div class="kpi-value" id="kpi-sources" style="color:var(--purple)">—</div><div class="kpi-label">Lead Sources</div></div>
-    <div class="kpi-card blue"><div class="kpi-icon">&#127939;</div><div class="kpi-value" id="kpi-ll" style="color:var(--blue)">—</div><div class="kpi-label">Local Leap Leads</div></div>
+    <div class="kpi-card blue" onclick="jumpTo('drill-total')"><div class="kpi-icon">&#128229;</div><div class="kpi-value" id="kpi-total" style="color:var(--blue)">—</div><div class="kpi-label">Total Leads</div><div style="font-size:10px;color:var(--blue);margin-top:4px">Tap to drill down ↓</div></div>
+    <div class="kpi-card green" onclick="jumpTo('drill-completed')"><div class="kpi-icon">&#9989;</div><div class="kpi-value" id="kpi-complete" style="color:var(--green)">—</div><div class="kpi-label">Completed Jobs</div><div style="font-size:10px;color:var(--green);margin-top:4px">Tap to drill down ↓</div></div>
+    <div class="kpi-card blue" style="border-top-color:var(--blue)" onclick="jumpTo('drill-active')"><div class="kpi-icon">&#128197;</div><div class="kpi-value" id="kpi-active" style="color:var(--blue)">—</div><div class="kpi-label">Scheduled / Active</div><div style="font-size:10px;color:var(--blue);margin-top:4px">Tap to drill down ↓</div></div>
+    <div class="kpi-card orange" onclick="jumpTo('drill-rate')"><div class="kpi-icon">&#128197;</div><div class="kpi-value" id="kpi-rate" style="color:var(--orange)">—</div><div class="kpi-label">Schedule Rate</div><div style="font-size:10px;color:var(--orange);margin-top:4px">Tap to drill down ↓</div></div>
+    <div class="kpi-card yellow" onclick="jumpTo('drill-needs')"><div class="kpi-icon">&#9203;</div><div class="kpi-value" id="kpi-needs" style="color:var(--yellow)">—</div><div class="kpi-label">Needs Scheduling</div><div style="font-size:10px;color:var(--yellow);margin-top:4px">Tap to drill down ↓</div></div>
+    <div class="kpi-card purple" onclick="jumpTo('drill-sources')"><div class="kpi-icon">&#128227;</div><div class="kpi-value" id="kpi-sources" style="color:var(--purple)">—</div><div class="kpi-label">Lead Sources</div><div style="font-size:10px;color:var(--purple);margin-top:4px">Tap to drill down ↓</div></div>
+    <div class="kpi-card blue" onclick="jumpTo('drill-sources')"><div class="kpi-icon">&#127939;</div><div class="kpi-value" id="kpi-ll" style="color:var(--blue)">—</div><div class="kpi-label">Local Leap Leads</div><div style="font-size:10px;color:var(--blue);margin-top:4px">Tap to drill down ↓</div></div>
   </div>
 
   <!-- Total Leads Drilldown -->
-  <div class="drilldown">
+  <div class="drilldown" id="drill-total">
     <div class="section-heading">&#128229; Total Leads — Source Breakdown</div>
     <table class="drill-table" id="leads-table">
       <thead>
@@ -143,8 +146,36 @@
     <button class="drill-btn" style="margin-top:14px" onclick="downloadCSV()">&#11015; Download CSV</button>
   </div>
 
+  <!-- Scheduled/Active Drilldown -->
+  <div class="drilldown" id="drill-active">
+    <div class="section-heading">&#128197; Scheduled / Active — Open Appointments</div>
+    <div class="drill-grid" id="active-summary"></div>
+    <table class="drill-table">
+      <thead><tr><th>Customer</th><th>Lead Source</th><th>Status</th><th>Date</th><th>Tags</th></tr></thead>
+      <tbody id="active-tbody"></tbody>
+    </table>
+  </div>
+
+  <!-- Schedule Rate Drilldown -->
+  <div class="drilldown" id="drill-rate">
+    <div class="section-heading">&#128197; Schedule Rate — By Source</div>
+    <table class="drill-table">
+      <thead>
+        <tr>
+          <th>Lead Source</th>
+          <th>Total Leads</th>
+          <th>Scheduled/Active</th>
+          <th>Completed</th>
+          <th>Schedule Rate</th>
+          <th>Performance</th>
+        </tr>
+      </thead>
+      <tbody id="rate-tbody"></tbody>
+    </table>
+  </div>
+
   <!-- Completed Jobs Drilldown -->
-  <div class="drilldown">
+  <div class="drilldown" id="drill-completed">
     <div class="section-heading">&#9989; Completed Jobs</div>
     <div class="drill-grid" id="completed-summary"></div>
     <table class="drill-table">
@@ -154,7 +185,7 @@
   </div>
 
   <!-- Needs Scheduling Drilldown -->
-  <div class="drilldown">
+  <div class="drilldown" id="drill-needs">
     <div class="section-heading">&#9203; Needs Scheduling — Action Required</div>
     <table class="drill-table">
       <thead><tr><th>Customer</th><th>Lead Source</th><th>Date</th><th>Tags</th></tr></thead>
@@ -163,7 +194,7 @@
   </div>
 
   <!-- Lead Source Accordions -->
-  <div class="section-heading">&#128227; Lead Sources &#8212; Click to Expand Details</div>
+  <div class="section-heading" id="drill-sources">&#128227; Lead Sources &#8212; Click to Expand Details</div>
   <div id="accordions"></div>
 </div>
 
@@ -290,6 +321,48 @@ function render(){
   });
   if(!ltbody.innerHTML) ltbody.innerHTML = '<tr class="empty-row"><td colspan="6">No leads in this timeframe</td></tr>';
 
+  // Scheduled/Active
+  document.getElementById('kpi-active').textContent = active;
+  const activeLeads = leads.filter(l=>isActive(l.status));
+  const asummary = document.getElementById('active-summary');
+  asummary.innerHTML = `
+    <div class="drill-card"><div class="drill-label">Total Active</div><div class="drill-value" style="color:var(--blue)">${activeLeads.length}</div></div>
+    ${Object.keys(SOURCE_META).map(src=>{
+      const c = activeLeads.filter(l=>l.source===src).length;
+      if(!c) return '';
+      return `<div class="drill-card"><div class="drill-label">${src}</div><div class="drill-value">${c}</div><div style="font-size:12px;color:var(--muted)">${SOURCE_META[src].icon} open appointment${c>1?'s':''}</div></div>`;
+    }).join('')}
+  `;
+  const atbody = document.getElementById('active-tbody');
+  atbody.innerHTML = activeLeads.length
+    ? activeLeads.map(l=>`<tr>
+        <td><strong>${l.name}</strong></td>
+        <td>${SOURCE_META[l.source]?.icon||''} ${l.source}</td>
+        <td><span class="badge badge-blue">${l.status}</span></td>
+        <td>${l.date}</td>
+        <td style="font-size:11px;color:#6b7280">${l.tags}</td>
+      </tr>`).join('')
+    : '<tr class="empty-row"><td colspan="5">No active appointments in this timeframe</td></tr>';
+
+  // Schedule Rate by source
+  const rtbody = document.getElementById('rate-tbody');
+  rtbody.innerHTML = '';
+  Object.keys(SOURCE_META).forEach(src=>{
+    const sl = leads.filter(l=>l.source===src);
+    if(!sl.length) return;
+    const sc = sl.filter(l=>isComplete(l.status)).length;
+    const sa = sl.filter(l=>isActive(l.status)).length;
+    const sr = sl.length ? Math.round((sa+sc)/sl.length*100) : 0;
+    const perf = sr>=80 ? '🟢 Strong' : sr>=50 ? '🟡 Average' : '🔴 Low';
+    rtbody.innerHTML += `<tr>
+      <td>${SOURCE_META[src].icon} <strong>${src}</strong></td>
+      <td>${sl.length}</td><td>${sa}</td><td>${sc}</td>
+      <td><strong>${sr}%</strong></td>
+      <td>${perf}</td>
+    </tr>`;
+  });
+  if(!rtbody.innerHTML) rtbody.innerHTML = '<tr class="empty-row"><td colspan="6">No data in this timeframe</td></tr>';
+
   // Completed Jobs
   const completedLeads = leads.filter(l=>isComplete(l.status));
   const csummary = document.getElementById('completed-summary');
@@ -392,6 +465,11 @@ function downloadCSV(){
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
+}
+
+function jumpTo(id){
+  const el = document.getElementById(id);
+  if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
 }
 
 // Init
